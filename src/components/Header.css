@@ -1,0 +1,38 @@
+/* General header styles */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: unsafe;
+  background-color: #f8f9fa; /* Light background */
+  padding: 10px;
+  border-bottom: 1px solid #e0e0e0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling the logo */
+.logo {
+  width: 120px; /* Adjust the size of the logo */
+  height: auto;
+  margin-right: 450px; /* Space between logo and text */
+}
+
+/* Customize text styles */
+.customizeText {
+  display: flex !important;
+  align-items: center;
+  font-size: 25px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+}
+
+/* Responsive styles for smaller screens */
+@media (max-width: 768px) {
+  .logo {
+    width: 100px; /* Smaller logo size for smaller screens */
+  }
+
+  .customizeText {
+    font-size: 20px; /* Adjust text size */
+  }
+}
