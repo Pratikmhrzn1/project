@@ -19,15 +19,10 @@ import SamsungA50 from "../assets/Samsung/SAMSUNG-A50-A50-S-A30-S-A70-A70-S-A02-
 import SamsungMO1 from "../assets/Samsung/SAMSUNG-M01-A10.png";
 const MobileCase = ({ uploadedImage }) => {
   const [bgColor, setBgColor] = useState("#ffffff");
-
-  const [selectedBrand, setSelectedBrand] = useState("Apple");
-
-  const [selectedModel, setSelectedModel] = useState("iphone11");
-
-  const [phoneImage, setPhoneImage] = useState(iphone11);
-
-  const [price, setPrice] = useState(19.99);
-
+  const [selectedBrand, setSelectedBrand] = useState("");
+  const [selectedModel, setSelectedModel] = useState("");
+  const [phoneImage, setPhoneImage] = useState(null);
+  const [price, setPrice] = useState(0);
   const modelsByBrand = {
     apple: [
       {
@@ -316,95 +311,108 @@ const MobileCase = ({ uploadedImage }) => {
     ],
   };
 
+  const handleBrandChange = (e) => {
+    const brand = e.target.value.toLowerCase(); // Ensure case consistency
+    setSelectedBrand(brand);
+
+    if (modelsByBrand[brand] && modelsByBrand[brand].length > 0) {
+      const firstModel = modelsByBrand[brand][0];
+      setSelectedModel(firstModel.value);
+      setPhoneImage(firstModel.image);
+      setPrice(firstModel.price);
+    } else {
+      setSelectedModel("");
+      setPhoneImage(null);
+      setPrice(0);
+    }
+  };
+
   const handleModelChange = (e) => {
-    const selectedModel = e.target.value;
+    const modelValue = e.target.value;
+    setSelectedModel(modelValue);
 
-    setSelectedModel(selectedModel);
-
-    const modelData = modelsByBrand[selectedBrand].find(
-      (model) => model.value === selectedModel
+    const modelData = modelsByBrand[selectedBrand]?.find(
+      (model) => model.value === modelValue
     );
 
     if (modelData) {
       setPhoneImage(modelData.image);
-
       setPrice(modelData.price);
     }
   };
 
   return (
     <div className="mobile-case-container">
-      {/* Left section: Phone case preview */}{" "}
+      {/* Left Section: Phone Case Preview */}
       <div className="mobile-case-preview">
-        {" "}
         <div className="color-picker">
-          <label>Background Color: </label>{" "}
+          <label>Background Color: </label>
           <input
             type="color"
             value={bgColor}
             onChange={(e) => setBgColor(e.target.value)}
-          />{" "}
-        </div>{" "}
+          />
+        </div>
         <div className="mobile-case" style={{ backgroundColor: bgColor }}>
-          {" "}
           {uploadedImage && (
             <img
               src={uploadedImage}
               alt="Customized Design"
               className="custom-image"
             />
-          )}{" "}
-          <img
-            src={phoneImage}
-            alt="Phone Case"
-            className="phone-case-overlay"
-          />{" "}
-        </div>{" "}
+          )}
+          {phoneImage && (
+            <img
+              src={phoneImage}
+              alt="Phone Case"
+              className="phone-case-overlay"
+            />
+          )}
+        </div>
       </div>
-      {/* Right section: Customization options */}{" "}
+
+      {/* Right Section: Customization Options */}
       <div className="customization-options">
-        <h2>Customize Your Mobile Case</h2> {/* Brand selection */}{" "}
+        <h2>Customize Your Mobile Case</h2>
+
+        {/* Brand Selection */}
         <div className="form-group">
-          <label htmlFor="brand">Select Brand:</label>{" "}
+          <label htmlFor="brand">Select Brand:</label>
+          <select id="brand" value={selectedBrand} onChange={handleBrandChange}>
+            <option value="">Select your brand</option>
+            <option value="apple">Apple</option>
+            <option value="samsung">Samsung</option>
+            {/* Add more brands if needed */}
+          </select>
+        </div>
+
+        {/* Model Selection */}
+        <div className="form-group">
+          <label htmlFor="model">Select Model:</label>
           <select
-            id="brand"
-            value={selectedBrand}
-            onChange={(e) => {
-              setSelectedBrand(e.target.value);
-              const firstModel = modelsByBrand[e.target.value][0];
-              setSelectedModel(firstModel.value);
-              setPhoneImage(firstModel.image);
-              setPrice(firstModel.price);
-            }}
+            id="model"
+            value={selectedModel}
+            onChange={handleModelChange}
+            disabled={!selectedBrand}
           >
-            <option value="">Select your brand</option>{" "}
-            <option value="apple">Apple</option>{" "}
-            <option value="samsung">Samsung</option>{" "}
-            <option value="oneplus">OnePlus</option>{" "}
-          </select>{" "}
+            <option value="">Select a model</option>
+            {modelsByBrand[selectedBrand]?.map((model) => (
+              <option key={model.value} value={model.value}>
+                {model.label}
+              </option>
+            ))}
+          </select>
         </div>
-        {/* Model selection */}{" "}
+
+        {/* Price Display */}
         <div className="form-group">
-          <label htmlFor="model">Select Model:</label>{" "}
-          <select id="model" value={selectedModel} onChange={handleModelChange}>
-            {" "}
-            {modelsByBrand[selectedBrand] &&
-              modelsByBrand[selectedBrand].map((model) => (
-                <option key={model.value} value={model.value}>
-                  {model.label}{" "}
-                </option>
-              ))}{" "}
-          </select>{" "}
-        </div>
-        {/* Price display */}{" "}
-        <div className="form-group">
-          {" "}
           <p>
-            Cost: <strong>${price.toFixed(2)}</strong>{" "}
-          </p>{" "}
+            Cost: <strong>${price.toFixed(2)}</strong>
+          </p>
         </div>
-        <button className="customize-btn">Add to Cart</button>{" "}
-      </div>{" "}
+
+        <button className="customize-btn">Add to Cart</button>
+      </div>
     </div>
   );
 };
